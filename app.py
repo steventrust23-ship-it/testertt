@@ -795,6 +795,7 @@ if program_data and program_models:
             st.subheader("🏆 Competitive Intelligence Dashboard")
             
             # Create competitive analysis
+            
             comp_data = []
             for program, df in program_data.items():
                 rating_col = 'Rating_Program' if 'Rating_Program' in df.columns else 'Rating'
@@ -807,29 +808,23 @@ if program_data and program_models:
                         'Program': program,
                         'Our_Rating': our_rating,
                         'Competitor_Rating': competitor_rating,
-                        'Gap': gap,
+                        'Gap': abs(gap), # <--- PERBAIKAN DI SINI: Menggunakan nilai absolut
                         'Performance': 'Leading' if gap > 0 else 'Behind'
                     })
             
-           if comp_data:
-               
+            if comp_data:
                 comp_df = pd.DataFrame(comp_data)
-               # Bersihkan kolom Performance agar tidak error
-                comp_df['Performance'] = comp_df['Performance'].fillna('Behind').str.strip()
-                comp_df.loc[~comp_df['Performance'].isin(['Leading', 'Behind']), 'Performance'] = 'Behind'
-
+                
                 # Competitive positioning chart
-                fig_comp = px.scatter(
-                comp_df, 
-                x='Competitor_Rating', 
-                y='Our_Rating',
-                size='Gap',
-                color='Performance',
-                hover_name='Program',
-                title='Competitive Positioning Matrix',
-                color_discrete_map={'Leading': '#00d2d3', 'Behind': '#ff6b6b'}
-                )
-
+                fig_comp = px.scatter(comp_df, 
+                                    x='Competitor_Rating', 
+                                    y='Our_Rating',
+                                    size='Gap', # Sekarang 'Gap' akan selalu non-negatif
+                                    color='Performance',
+                                    hover_name='Program',
+                                    title='Competitive Positioning Matrix',
+                                    color_discrete_map={'Leading': '#00d2d3', 'Behind': '#ff6b6b'})
+                
                 # Add diagonal line
                 max_rating = max(comp_df['Our_Rating'].max(), comp_df['Competitor_Rating'].max())
                 fig_comp.add_trace(go.Scatter(
@@ -846,8 +841,6 @@ if program_data and program_models:
                     font=dict(color='white')
                 )
                 st.plotly_chart(fig_comp, use_container_width=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with tab4:
         st.markdown('<div class="animated-element">', unsafe_allow_html=True)
@@ -1215,7 +1208,4 @@ st.markdown("""
         <span style="margin: 0 1rem;">🎯 Strategic Intelligence</span>
     </div>
 </div>
-
 """, unsafe_allow_html=True)
-
-
