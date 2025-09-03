@@ -811,25 +811,25 @@ if program_data and program_models:
                         'Performance': 'Leading' if gap > 0 else 'Behind'
                     })
             
-            if comp_data:
-                comp_df = pd.DataFrame(comp_data)
-                
-                # Competitive positioning chart
-                   # Bersihkan kolom Performance
-                    comp_df['Performance'] = comp_df['Performance'].fillna('Behind').str.strip()
-                    comp_df.loc[~comp_df['Performance'].isin(['Leading', 'Behind']), 'Performance'] = 'Behind'
+           if comp_data:
+    comp_df = pd.DataFrame(comp_data)
 
-                    # Competitive positioning chart
-                    fig_comp = px.scatter(
-                        comp_df, 
-                        x='Competitor_Rating', 
-                        y='Our_Rating',
-                        size='Gap',
-                        color='Performance',
-                        hover_name='Program',
-                        title='Competitive Positioning Matrix',
-                        color_discrete_map={'Leading': '#00d2d3', 'Behind': '#ff6b6b'}
-                    )
+    # Bersihkan kolom Performance agar tidak error
+    comp_df['Performance'] = comp_df['Performance'].fillna('Behind').str.strip()
+    comp_df.loc[~comp_df['Performance'].isin(['Leading', 'Behind']), 'Performance'] = 'Behind'
+
+    # Competitive positioning chart
+    fig_comp = px.scatter(
+        comp_df, 
+        x='Competitor_Rating', 
+        y='Our_Rating',
+        size='Gap',
+        color='Performance',
+        hover_name='Program',
+        title='Competitive Positioning Matrix',
+        color_discrete_map={'Leading': '#00d2d3', 'Behind': '#ff6b6b'}
+    )
+
 
                 
                 # Add diagonal line
@@ -1219,3 +1219,4 @@ st.markdown("""
 </div>
 
 """, unsafe_allow_html=True)
+
