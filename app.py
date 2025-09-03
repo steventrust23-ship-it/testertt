@@ -815,14 +815,22 @@ if program_data and program_models:
                 comp_df = pd.DataFrame(comp_data)
                 
                 # Competitive positioning chart
-                fig_comp = px.scatter(comp_df, 
-                                    x='Competitor_Rating', 
-                                    y='Our_Rating',
-                                    size='Gap',
-                                    color='Performance',
-                                    hover_name='Program',
-                                    title='Competitive Positioning Matrix',
-                                    color_discrete_map={'Leading': '#00d2d3', 'Behind': '#ff6b6b'})
+                   # Bersihkan kolom Performance
+                    comp_df['Performance'] = comp_df['Performance'].fillna('Behind').str.strip()
+                    comp_df.loc[~comp_df['Performance'].isin(['Leading', 'Behind']), 'Performance'] = 'Behind'
+
+                    # Competitive positioning chart
+                    fig_comp = px.scatter(
+                        comp_df, 
+                        x='Competitor_Rating', 
+                        y='Our_Rating',
+                        size='Gap',
+                        color='Performance',
+                        hover_name='Program',
+                        title='Competitive Positioning Matrix',
+                        color_discrete_map={'Leading': '#00d2d3', 'Behind': '#ff6b6b'}
+                    )
+
                 
                 # Add diagonal line
                 max_rating = max(comp_df['Our_Rating'].max(), comp_df['Competitor_Rating'].max())
@@ -1209,4 +1217,5 @@ st.markdown("""
         <span style="margin: 0 1rem;">🎯 Strategic Intelligence</span>
     </div>
 </div>
+
 """, unsafe_allow_html=True)
