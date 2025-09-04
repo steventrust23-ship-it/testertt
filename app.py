@@ -993,10 +993,10 @@ if program_data and program_models:
                 ]
                 
                 st.markdown("""
-                <div class="metric-card">
-                    <h3>🐄 STABLE PROGRAMS</h3>
-                    <p><strong>Low Rating • Low Volatility</strong></p>
-                </div>
+                <div class="metric-card" style="background-color: #FFFFFF; padding: 10px; border-radius: 5px;">
+                    <h3 style="color: #FFD700;">🐄 STABLE PROGRAMS</h3> <!-- Kuning -->
+                    <p><strong style="color: #0000FF;">Low Rating • Low Volatility</strong></p> <!-- Biru -->
+                 </div>
                 """, unsafe_allow_html=True)
                 
                 if len(stable) > 0:
@@ -1209,4 +1209,5 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+
 
