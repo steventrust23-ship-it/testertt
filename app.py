@@ -7,7 +7,8 @@ Dynamic and Interactive Version with Modern UI
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
+# import pickle <-- diubah
+from joblib import load
 from datetime import timedelta, datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -397,7 +398,6 @@ else:
             if data_file and model_file:
                 try:
                     df = pd.read_excel(data_file)
-                    
                     # Column mapping
                     column_mapping = {
                         'Tanggal_Program': 'Date',
@@ -426,7 +426,8 @@ else:
                     
                     program_data[program] = df
                     
-                    model = pickle.load(model_file)
+                    # model = pickle.load(model_file) <--- diganti
+                    model = load(model_file)
                     program_models[program] = model
                     
                     st.success(f"✅ {program} loaded!")
@@ -791,56 +792,56 @@ if program_data and program_models:
                             peak_performance = program_pred['Rating'].max()
                             st.metric("🎯 Peak Performance", f"{peak_performance:.3f}")
             
-            # # Competitive Intelligence
-            # st.subheader("🏆 Competitive Intelligence Dashboard")
+        #     # Competitive Intelligence
+        #     st.subheader("🏆 Competitive Intelligence Dashboard")
             
-            # # Create competitive analysis
-            
-            # comp_data = []
-            # for program, df in program_data.items():
-            #     rating_col = 'Rating_Program' if 'Rating_Program' in df.columns else 'Rating'
-            #     if 'Rating_Kompetitor_Tertinggi' in df.columns:
-            #         our_rating = df[rating_col].tail(7).mean()
-            #         competitor_rating = df['Rating_Kompetitor_Tertinggi'].tail(7).mean()
-            #         gap = our_rating - competitor_rating
+        #     # Create competitive analysis
+        #     comp_data = []
+        #     for program, df in program_data.items():
+        #         rating_col = 'Rating_Program' if 'Rating_Program' in df.columns else 'Rating'
+        #         if 'Rating_Kompetitor_Tertinggi' in df.columns:
+        #             our_rating = df[rating_col].tail(7).mean()
+        #             competitor_rating = df['Rating_Kompetitor_Tertinggi'].tail(7).mean()
+        #             gap = our_rating - competitor_rating
                     
-            #         comp_data.append({
-            #             'Program': program,
-            #             'Our_Rating': our_rating,
-            #             'Competitor_Rating': competitor_rating,
-            #             'Gap': abs(gap), # <--- PERBAIKAN DI SINI: Menggunakan nilai absolut
-            #             'Performance': 'Leading' if gap > 0 else 'Behind'
-            #         })
+        #             comp_data.append({
+        #                 'Program': program,
+        #                 'Our_Rating': our_rating,
+        #                 'Competitor_Rating': competitor_rating,
+        #                 'Gap': gap,
+        #                 'Performance': 'Leading' if gap > 0 else 'Behind'
+        #             })
             
-            # if comp_data:
-            #     comp_df = pd.DataFrame(comp_data)
+        #     if comp_data:
+        #         comp_df = pd.DataFrame(comp_data)
+        #         # Competitive positioning chart
+        #         fig_comp = px.scatter(comp_df, 
+        #                             x='Competitor_Rating', 
+        #                             y='Our_Rating',
+        #                             size=comp_df['Gap'].abs(), # <-- ini diganti
+        #                             color='Performance',
+        #                             hover_name='Program',
+        #                             title='Competitive Positioning Matrix',
+        #                             color_discrete_map={'Leading': '#00d2d3', 'Behind': '#ff6b6b'})
                 
-            #     # Competitive positioning chart
-            #     fig_comp = px.scatter(comp_df, 
-            #                         x='Competitor_Rating', 
-            #                         y='Our_Rating',
-            #                         size='Gap', # Sekarang 'Gap' akan selalu non-negatif
-            #                         color='Performance',
-            #                         hover_name='Program',
-            #                         title='Competitive Positioning Matrix',
-            #                         color_discrete_map={'Leading': '#00d2d3', 'Behind': '#ff6b6b'})
+        #         # Add diagonal line
+        #         max_rating = max(comp_df['Our_Rating'].max(), comp_df['Competitor_Rating'].max())
+        #         fig_comp.add_trace(go.Scatter(
+        #             x=[0, max_rating],
+        #             y=[0, max_rating],
+        #             mode='lines',
+        #             line=dict(dash='dash', color='white'),
+        #             name='Parity Line'
+        #         ))
                 
-            #     # Add diagonal line
-            #     max_rating = max(comp_df['Our_Rating'].max(), comp_df['Competitor_Rating'].max())
-            #     fig_comp.add_trace(go.Scatter(
-            #         x=[0, max_rating],
-            #         y=[0, max_rating],
-            #         mode='lines',
-            #         line=dict(dash='dash', color='white'),
-            #         name='Parity Line'
-            #     ))
-                
-            #     fig_comp.update_layout(
-            #         paper_bgcolor='rgba(0,0,0,0)',
-            #         plot_bgcolor='rgba(0,0,0,0)',
-            #         font=dict(color='white')
-            #     )
-            #     st.plotly_chart(fig_comp, use_container_width=True)
+        #         fig_comp.update_layout(
+        #             paper_bgcolor='rgba(0,0,0,0)',
+        #             plot_bgcolor='rgba(0,0,0,0)',
+        #             font=dict(color='white')
+        #         )
+        #         st.plotly_chart(fig_comp, use_container_width=True)
+        
+        # st.markdown('</div>', unsafe_allow_html=True)
     
     with tab4:
         st.markdown('<div class="animated-element">', unsafe_allow_html=True)
@@ -993,10 +994,10 @@ if program_data and program_models:
                 ]
                 
                 st.markdown("""
-                <div class="metric-card" style="background-color: #FFFFFF; padding: 10px; border-radius: 5px;">
-                    <h3 style="color: #FFD700;">🐄 STABLE PROGRAMS</h3> <!-- Kuning -->
-                    <p><strong style="color: #0000FF;">Low Rating • Low Volatility</strong></p> <!-- Biru -->
-                 </div>
+                <div class="metric-card">
+                    <h3>🐄 STABLE PROGRAMS</h3>
+                    <p><strong>Low Rating • Low Volatility</strong></p>
+                </div>
                 """, unsafe_allow_html=True)
                 
                 if len(stable) > 0:
